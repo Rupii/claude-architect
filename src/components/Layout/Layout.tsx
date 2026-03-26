@@ -7,6 +7,7 @@ const navItems = [
   { to: '/guide', label: 'Study Guide', icon: '📚' },
   { to: '/test', label: 'Mock Test', icon: '🎯' },
   { to: '/progress', label: 'Progress', icon: '📊' },
+  { to: '/astrology', label: 'Astrology ✨', icon: '🔮' },
 ];
 
 export default function Layout() {
@@ -14,11 +15,18 @@ export default function Layout() {
     localStorage.getItem('theme') === 'dark'
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(() =>
+    localStorage.getItem('sidebar-collapsed') === 'true'
+  );
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
     localStorage.setItem('theme', dark ? 'dark' : 'light');
   }, [dark]);
+
+  useEffect(() => {
+    localStorage.setItem('sidebar-collapsed', String(collapsed));
+  }, [collapsed]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
@@ -90,25 +98,45 @@ export default function Layout() {
         <aside
           className={`
             fixed md:static inset-y-0 left-0 z-20
-            w-56 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800/80
-            transform transition-transform duration-200
+            ${collapsed ? 'w-14' : 'w-56'} bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800/80
+            transform transition-all duration-200
             ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-            flex flex-col pt-16 md:pt-0
+            flex flex-col pt-16 md:pt-0 overflow-hidden
           `}
           style={{ boxShadow: '4px 0 24px rgba(0,0,0,0.07)' }}
         >
-          <nav className="flex-1 p-3 mt-3 space-y-0.5">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600 px-3 pb-2">
-              Navigation
-            </p>
+          <nav className="flex-1 p-2 mt-3 space-y-0.5">
+            {/* Nav header row with collapse toggle */}
+            <div className={`flex items-center mb-2 ${collapsed ? 'justify-center px-1' : 'px-3'}`}>
+              {!collapsed && (
+                <p className="flex-1 text-[10px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-600">
+                  Navigation
+                </p>
+              )}
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                className="hidden md:flex items-center justify-center w-6 h-6 rounded text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex-shrink-0"
+              >
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                  {collapsed ? (
+                    <path d="M4 2l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  ) : (
+                    <path d="M8 2L4 6l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  )}
+                </svg>
+              </button>
+            </div>
+
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 end={item.end}
+                title={collapsed ? item.label : undefined}
                 onClick={() => setSidebarOpen(false)}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 border ${
+                  `flex items-center ${collapsed ? 'justify-center px-0 py-2.5' : 'gap-3 px-3 py-2.5'} rounded-lg text-sm font-medium transition-all duration-150 border ${
                     isActive
                       ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-900/50 shadow-sm'
                       : 'text-gray-600 dark:text-gray-400 border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50 hover:text-gray-900 dark:hover:text-gray-200'
@@ -116,22 +144,24 @@ export default function Layout() {
                 }
               >
                 <span className="text-base leading-none">{item.icon}</span>
-                <span className="flex-1">{item.label}</span>
+                {!collapsed && <span className="flex-1">{item.label}</span>}
               </NavLink>
             ))}
           </nav>
 
-          {/* Sidebar footer card */}
-          <div className="p-3">
-            <div
-              className="rounded-xl p-3 border border-blue-100 dark:border-blue-900/40 text-center"
-              style={{ background: 'linear-gradient(135deg, rgba(219,234,254,0.6) 0%, rgba(224,231,255,0.6) 100%)' }}
-            >
-              <div className="text-xs font-semibold text-blue-700 dark:text-blue-400">Passing Score</div>
-              <div className="text-lg font-black text-blue-800 dark:text-blue-300 leading-tight">720<span className="text-xs font-medium opacity-60"> / 1000</span></div>
-              <div className="text-[10px] text-blue-500/70 dark:text-blue-500/50 mt-0.5">5 domains · certification</div>
+          {/* Sidebar footer card — hidden when collapsed */}
+          {!collapsed && (
+            <div className="p-3">
+              <div
+                className="rounded-xl p-3 border border-blue-100 dark:border-blue-900/40 text-center"
+                style={{ background: 'linear-gradient(135deg, rgba(219,234,254,0.6) 0%, rgba(224,231,255,0.6) 100%)' }}
+              >
+                <div className="text-xs font-semibold text-blue-700 dark:text-blue-400">Passing Score</div>
+                <div className="text-lg font-black text-blue-800 dark:text-blue-300 leading-tight">720<span className="text-xs font-medium opacity-60"> / 1000</span></div>
+                <div className="text-[10px] text-blue-500/70 dark:text-blue-500/50 mt-0.5">5 domains · certification</div>
+              </div>
             </div>
-          </div>
+          )}
         </aside>
 
         {/* Main content */}

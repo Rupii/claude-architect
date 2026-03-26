@@ -136,9 +136,9 @@ export default function MockTest() {
                     <div className="flex items-center gap-2">
                       <span className={`w-2 h-2 rounded-full ${dotColors[d.color]}`} />
                       <span className="font-medium text-sm text-gray-900 dark:text-white">{d.name}</span>
-                      <span className="ml-auto text-xs text-gray-400">{count} questions</span>
+                      <span className="ml-auto text-xs text-gray-400 dark:text-gray-500">{count} questions</span>
                     </div>
-                    <div className="text-xs text-gray-400 mt-0.5 pl-4">{d.weight}% of exam</div>
+                    <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5 pl-4">{d.weight}% of exam</div>
                   </button>
                 );
               })}
@@ -158,7 +158,7 @@ export default function MockTest() {
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               Question {currentIdx + 1} of {testQuestions.length}
             </span>
             <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400">
@@ -181,10 +181,10 @@ export default function MockTest() {
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-800 p-6" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05)' }}>
           {/* Domain tag */}
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs text-gray-400 uppercase tracking-wider">
+            <span className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider">
               {domains.find((d) => d.id === q.domainId)?.name ?? q.domainId}
             </span>
-            <span className="text-xs text-gray-300 dark:text-gray-600">·</span>
+            <span className="text-xs text-gray-300 dark:text-gray-500">·</span>
             <span className={`text-xs px-1.5 py-0.5 rounded ${
               q.difficulty === 'easy' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' :
               q.difficulty === 'medium' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' :
@@ -370,13 +370,13 @@ export default function MockTest() {
               y="110"
               textAnchor="middle"
               fontSize="9"
-              fill="#6b7280"
+              fill="#9ca3af"
             >
               {result.correctAnswers}/{result.totalQuestions} correct
             </text>
           </svg>
 
-          <p className="text-xs text-gray-400 mt-1">Passing score: {PASS_SCORE} / {MAX_SCORE}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Passing score: {PASS_SCORE} / {MAX_SCORE}</p>
         </div>
 
         {/* Domain breakdown */}
@@ -397,7 +397,7 @@ export default function MockTest() {
                       />
                       <span className="text-gray-700 dark:text-gray-300">{domain?.name ?? domId}</span>
                       {domain?.weight != null && (
-                        <span className="text-xs text-gray-400">{domain.weight}% exam</span>
+                        <span className="text-xs text-gray-400 dark:text-gray-500">{domain.weight}% exam</span>
                       )}
                     </div>
                     <span

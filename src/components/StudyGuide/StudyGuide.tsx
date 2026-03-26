@@ -34,7 +34,7 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
   return (
     <div className={`border rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-md ${domainBorderColors[color]}`} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
       <button
-        className="w-full flex items-center justify-between px-4 py-3.5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3.5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         onClick={() => setOpen(!open)}
       >
         <div className="flex items-center gap-2">
@@ -46,11 +46,11 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
             </span>
           )}
         </div>
-        <span className="text-gray-400 ml-2">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-400 dark:text-gray-500 ml-2">{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
-        <div className="px-4 py-4 bg-gray-50 dark:bg-gray-850 border-t border-gray-100 dark:border-gray-700 space-y-4">
+        <div className="px-4 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700 space-y-4">
           {/* Explanation */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Overview</h4>
@@ -74,7 +74,7 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
                     <div className={`font-bold text-sm ${domainTextColors[color]}`}>{kc.term}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{kc.definition}</div>
                     {kc.example && (
-                      <div className="text-xs text-gray-500 dark:text-gray-500 mt-1 italic">Example: {kc.example}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">Example: {kc.example}</div>
                     )}
                   </div>
                 ))}
@@ -188,7 +188,7 @@ export default function StudyGuide() {
                   <h2 className={`font-bold text-lg ${domainTextColors[selectedDomain.color]}`}>
                     {selectedDomain.name}
                   </h2>
-                  <p className="text-xs text-gray-500">{selectedDomain.weight}% of exam · {selectedDomain.taskStatements.length} task statements</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{selectedDomain.weight}% of exam · {selectedDomain.taskStatements.length} task statements</p>
                 </div>
               </div>
 
@@ -217,7 +217,7 @@ export default function StudyGuide() {
                   <TaskStatementCard key={ts.id} ts={ts} color={selectedDomain.color} />
                 ))}
                 {filteredTasks.length === 0 && (
-                  <p className="text-center text-gray-400 py-8">No topics match "{search}"</p>
+                  <p className="text-center text-gray-400 dark:text-gray-500 py-8">No topics match "{search}"</p>
                 )}
               </div>
 

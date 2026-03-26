@@ -98,7 +98,7 @@ export default function Progress() {
             style={{ width: `${overallPct}%`, background: 'linear-gradient(90deg, #3b82f6 0%, #6366f1 50%, #22c55e 100%)' }}
           />
         </div>
-        <p className="text-sm text-gray-500">{completedTotal} of {totalTasks} tasks completed</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{completedTotal} of {totalTasks} tasks completed</p>
       </div>
 
       {/* Exam Domain Weights — static donut chart */}
@@ -163,7 +163,7 @@ export default function Progress() {
                   <div className="flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${dotColors[domain.color]}`} />
                     <span className="text-sm text-gray-700 dark:text-gray-300">{domain.name}</span>
-                    <span className="text-xs text-gray-400">({domain.weight}%)</span>
+                    <span className="text-xs text-gray-400 dark:text-gray-500">({domain.weight}%)</span>
                   </div>
                   <span className="text-sm font-medium text-gray-900 dark:text-white">{done}/{total}</span>
                 </div>
@@ -186,14 +186,14 @@ export default function Progress() {
           Test History ({progress.testResults.length})
         </h2>
         {progress.testResults.length === 0 ? (
-          <p className="text-gray-400 text-sm text-center py-6">
+          <p className="text-gray-400 dark:text-gray-500 text-sm text-center py-6">
             No tests taken yet. Head to Mock Test to get started.
           </p>
         ) : (
           <>
             {/* Score Trend Bar Chart */}
             <div className="mb-6">
-              <p className="text-xs text-gray-400 mb-2">Score trend (last {recentTests.length} test{recentTests.length !== 1 ? 's' : ''})</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-2">Score trend (last {recentTests.length} test{recentTests.length !== 1 ? 's' : ''})</p>
               <svg
                 viewBox={`0 0 ${recentTests.length * (BAR_WIDTH + BAR_GAP) + 24} ${CHART_HEIGHT}`}
                 width="100%"
@@ -206,7 +206,7 @@ export default function Progress() {
                   y1={PASS_LINE_Y}
                   x2={recentTests.length * (BAR_WIDTH + BAR_GAP) + 20}
                   y2={PASS_LINE_Y}
-                  stroke="#6b7280"
+                  stroke="#9ca3af"
                   strokeWidth="1"
                   strokeDasharray="3 3"
                 />
@@ -215,7 +215,7 @@ export default function Progress() {
                   x={recentTests.length * (BAR_WIDTH + BAR_GAP) + 22}
                   y={PASS_LINE_Y + 3}
                   fontSize="7"
-                  fill="#6b7280"
+                  fill="#9ca3af"
                   textAnchor="start"
                 >
                   720
@@ -241,7 +241,7 @@ export default function Progress() {
                         x={barX + BAR_WIDTH / 2}
                         y={barY - 2}
                         fontSize="7"
-                        fill="#6b7280"
+                        fill="#9ca3af"
                         textAnchor="middle"
                       >
                         {r.score}
@@ -255,7 +255,7 @@ export default function Progress() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-left text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                  <tr className="text-left text-gray-400 dark:text-gray-500 border-b border-gray-100 dark:border-gray-700">
                     <th className="pb-2 pr-4 font-medium">Date</th>
                     <th className="pb-2 pr-4 font-medium">Mode</th>
                     <th className="pb-2 pr-4 font-medium">Score</th>
@@ -322,7 +322,7 @@ export default function Progress() {
             }}
           />
         </div>
-        <p className="text-xs text-gray-400 mt-3">
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
           Last updated: {progress.lastUpdated ? new Date(progress.lastUpdated).toLocaleString() : 'Never'}
         </p>
       </div>

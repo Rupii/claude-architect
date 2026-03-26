@@ -52,7 +52,7 @@ function DayCard({ day, completedTasks, toggleTask, toggleAll }: {
         </div>
         <div className="text-right">
           <div className="text-2xl font-bold text-gray-900 dark:text-white">{pct}%</div>
-          <div className="text-xs text-gray-500">{completed}/{day.tasks.length}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{completed}/{day.tasks.length}</div>
         </div>
       </div>
 
@@ -104,7 +104,7 @@ function DayCard({ day, completedTasks, toggleTask, toggleAll }: {
                   }`}>
                     {task.label}
                   </span>
-                  <span className="ml-2 text-xs text-gray-400">
+                  <span className="ml-2 text-xs text-gray-400 dark:text-gray-500">
                     {task.estimatedMinutes}min
                   </span>
                 </div>
@@ -157,9 +157,9 @@ export default function StudyPlan() {
           className="rounded-2xl p-6 border-2 border-dashed border-blue-300 dark:border-blue-700"
           style={{ background: 'linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%)' }}
         >
-          <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-1">Before you begin</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-blue-400 dark:text-blue-300 mb-1">Before you begin</p>
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">Who's studying today?</h2>
-          <p className="text-sm text-gray-500 mb-4">Enter your name so we can make this feel like yours.</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Enter your name so we can make this feel like yours.</p>
           <div className="flex gap-2">
             <input
               autoFocus
@@ -230,7 +230,7 @@ export default function StudyPlan() {
             style={{ width: `${overallPct}%`, background: 'linear-gradient(90deg, #3b82f6 0%, #6366f1 50%, #22c55e 100%)' }}
           />
         </div>
-        <p className="text-sm text-gray-500 mt-1">{overallPct}% overall complete</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{overallPct}% overall complete</p>
       </div>
 
       {studyPlan.map((day) => (

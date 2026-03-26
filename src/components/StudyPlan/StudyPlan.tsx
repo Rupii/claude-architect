@@ -113,11 +113,12 @@ export default function StudyPlan() {
   const overallPct = Math.round((completedTotal / totalTasks) * 100);
 
   const [name, setName] = useState(() => localStorage.getItem('userName') ?? '');
+  const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(name);
 
   function saveName() {
     const trimmed = draft.trim();
+    if (!trimmed) return;
     setName(trimmed);
     localStorage.setItem('userName', trimmed);
     setEditing(false);
@@ -125,43 +126,78 @@ export default function StudyPlan() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        {/* Greeting / name */}
-        <div className="flex items-center gap-2 mb-1">
-          {editing ? (
-            <div className="flex items-center gap-2">
+
+      {/* Hero greeting banner */}
+      {!name ? (
+        <div
+          className="rounded-2xl p-6 border-2 border-dashed border-blue-300 dark:border-blue-700"
+          style={{ background: 'linear-gradient(135deg, #eff6ff 0%, #eef2ff 100%)' }}
+        >
+          <p className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-1">Before you begin</p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">Who's studying today?</h2>
+          <p className="text-sm text-gray-500 mb-4">Enter your name so we can make this feel like yours.</p>
+          <div className="flex gap-2">
+            <input
+              autoFocus
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') saveName(); }}
+              placeholder="e.g. Rupesh"
+              className="flex-1 px-4 py-2.5 rounded-xl border-2 border-blue-300 dark:border-blue-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-semibold text-base outline-none focus:border-blue-500 placeholder:font-normal placeholder:text-gray-400"
+            />
+            <button
+              onClick={saveName}
+              className="px-5 py-2.5 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90 active:scale-95"
+              style={{ background: 'linear-gradient(135deg, #2563eb, #4f46e5)' }}
+            >
+              Let's go →
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="rounded-2xl p-6 relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #312e81 100%)', boxShadow: '0 8px 32px rgba(59,130,246,0.2)' }}
+        >
+          {/* decorative blobs */}
+          <div className="absolute -top-6 -right-6 w-32 h-32 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #60a5fa, transparent)' }} />
+          <div className="absolute -bottom-4 -left-4 w-24 h-24 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #a78bfa, transparent)' }} />
+
+          <p className="text-blue-300/70 text-xs font-semibold uppercase tracking-widest mb-1">Welcome back</p>
+          <h1 className="text-3xl font-black text-white leading-tight">
+            {name.toUpperCase()}.
+          </h1>
+          <p className="text-blue-200/80 text-base mt-1 font-medium">
+            Your 4-day plan to crack the certification. Let's make it count.
+          </p>
+          <button
+            onClick={() => { setDraft(name); setEditing(true); }}
+            className="mt-3 text-xs text-blue-400/60 hover:text-blue-300 transition-colors underline underline-offset-2"
+          >
+            Not {name}?
+          </button>
+
+          {/* inline edit */}
+          {editing && (
+            <div className="mt-3 flex gap-2">
               <input
                 autoFocus
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') setEditing(false); }}
+                className="flex-1 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white font-semibold outline-none placeholder:text-white/30 text-sm"
                 placeholder="Your name"
-                className="text-2xl font-bold bg-transparent border-b-2 border-blue-500 outline-none text-gray-900 dark:text-white w-48"
               />
-              <button onClick={saveName} className="text-sm px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
-              <button onClick={() => setEditing(false)} className="text-sm px-2 py-1 text-gray-400 hover:text-gray-600">✕</button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 group">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {name ? `Hey ${name}, here is your 4-Day Study Plan` : '4-Day Study Plan'}
-              </h1>
-              <button
-                onClick={() => { setDraft(name); setEditing(true); }}
-                className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-opacity text-sm"
-                title="Edit name"
-              >
-                ✏️
-              </button>
+              <button onClick={saveName} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold rounded-lg">Save</button>
+              <button onClick={() => setEditing(false)} className="px-3 py-2 text-white/50 hover:text-white text-sm">✕</button>
             </div>
           )}
         </div>
-        {!name && !editing && (
-          <button onClick={() => { setDraft(''); setEditing(true); }} className="text-xs text-blue-500 hover:underline mb-1 block">
-            + Add your name for a personal greeting
-          </button>
-        )}
-        <p className="text-gray-500 dark:text-gray-400 mt-1">
+      )}
+
+      <div>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white">4-Day Study Plan</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-0.5 text-sm">
           Complete all domains before exam day. {completedTotal}/{totalTasks} tasks done.
         </p>
         <div className="mt-3 w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden shadow-inner">

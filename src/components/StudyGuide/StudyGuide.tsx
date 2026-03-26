@@ -28,6 +28,22 @@ const domainBorderColors: Record<string, string> = {
   red: 'border-red-200 dark:border-red-800',
 };
 
+const domainBorderLeftColors: Record<string, string> = {
+  blue: 'border-l-blue-400 dark:border-l-blue-500',
+  purple: 'border-l-purple-400 dark:border-l-purple-500',
+  green: 'border-l-green-400 dark:border-l-green-500',
+  orange: 'border-l-amber-400 dark:border-l-amber-500',
+  red: 'border-l-red-400 dark:border-l-red-500',
+};
+
+const domainTintBg: Record<string, string> = {
+  blue: 'bg-blue-50/60 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/40',
+  purple: 'bg-purple-50/60 dark:bg-purple-950/20 border-purple-100 dark:border-purple-900/40',
+  green: 'bg-green-50/60 dark:bg-green-950/20 border-green-100 dark:border-green-900/40',
+  orange: 'bg-amber-50/60 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/40',
+  red: 'bg-red-50/60 dark:bg-red-950/20 border-red-100 dark:border-red-900/40',
+};
+
 function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) {
   const [open, setOpen] = useState(false);
 
@@ -51,30 +67,41 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
 
       {open && (
         <div className="px-4 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700 space-y-4">
-          {/* Explanation */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Overview</h4>
+          {/* Overview — domain-tinted panel */}
+          <div className={`rounded-lg p-3 border ${domainTintBg[color]}`}>
+            <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5 ${domainTextColors[color]}`}>
+              <span className={`w-1 h-3 rounded-full flex-shrink-0 ${domainBgColors[color]}`} />
+              Overview
+            </h4>
             <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line leading-relaxed">{ts.explanation}</p>
           </div>
 
           {TASK_DIAGRAMS[ts.id] && (
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Diagram</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1.5">
+                <span className="w-1 h-3 rounded-full flex-shrink-0 bg-gray-400 dark:bg-gray-500" />
+                Diagram
+              </h4>
               {TASK_DIAGRAMS[ts.id]}
             </div>
           )}
 
-          {/* Key Concepts */}
+          {/* Key Concepts — amber accent */}
           {ts.keyConcepts && ts.keyConcepts.length > 0 && (
             <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Key Concepts</h4>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2 flex items-center gap-1.5">
+                <span className="w-1 h-3 rounded-full flex-shrink-0 bg-amber-500" />
+                Key Concepts
+              </h4>
               <div className="space-y-2">
                 {ts.keyConcepts.map((kc, i) => (
-                  <div key={i} className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                  <div key={i} className={`bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700 border-l-4 ${domainBorderLeftColors[color]}`}>
                     <div className={`font-bold text-sm ${domainTextColors[color]}`}>{kc.term}</div>
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">{kc.definition}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-300 mt-1">{kc.definition}</div>
                     {kc.example && (
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 italic">Example: {kc.example}</div>
+                      <div className="text-xs mt-1.5 px-2 py-1 rounded bg-gray-50 dark:bg-gray-900 text-gray-500 dark:text-gray-400 border-l-2 border-gray-300 dark:border-gray-600 italic">
+                        eg. {kc.example}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -82,11 +109,14 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
             </div>
           )}
 
-          {/* Knowledge & Skills grid */}
+          {/* Knowledge & Skills grid — each in its own card */}
           <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Knowledge</h4>
-              <ul className="space-y-1">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <h4 className={`text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5 ${domainTextColors[color]}`}>
+                <span className={`w-1 h-3 rounded-full flex-shrink-0 ${domainBgColors[color]}`} />
+                Knowledge
+              </h4>
+              <ul className="space-y-1.5">
                 {ts.knowledge.map((k, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                     <span className={`mt-1 w-2 h-2 rounded-sm flex-shrink-0 rotate-45 ${domainBgColors[color]}`} />
@@ -95,12 +125,15 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
                 ))}
               </ul>
             </div>
-            <div>
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Skills</h4>
-              <ul className="space-y-1">
+            <div className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2 flex items-center gap-1.5">
+                <span className="w-1 h-3 rounded-full flex-shrink-0 bg-emerald-500" />
+                Skills
+              </h4>
+              <ul className="space-y-1.5">
                 {ts.skills.map((s, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                    <span className="mt-1.5 text-xs">→</span>
+                    <span className="mt-0.5 text-emerald-500 dark:text-emerald-400 flex-shrink-0 font-bold text-xs">→</span>
                     {s}
                   </li>
                 ))}

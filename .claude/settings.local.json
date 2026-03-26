@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n '`' /Users/rupeshmudavath/Downloads/claude/claude-exam-prep/src/data/domains.ts)",
+      "Bash(grep -v \"explanation: \\\\`\\\\|^\\\\s*\\\\`\")",
+      "Bash(node:*)",
+      "Bash(grep -n '\\\\`' src/data/domains.ts)",
+      "Bash(grep -v \"explanation:\\\\s*\\\\`\")",
+      "Bash(grep -v \"definition:\\\\s*\\\\`\")"
+    ]
+  }
+}

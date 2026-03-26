@@ -6,6 +6,7 @@ const navItems = [
   { to: '/', label: 'Study Plan', icon: '📅', end: true },
   { to: '/guide', label: 'Study Guide', icon: '📚' },
   { to: '/test', label: 'Mock Test', icon: '🎯' },
+  { to: '/exam', label: 'Exam Sim', icon: '📝' },
   { to: '/progress', label: 'Progress', icon: '📊' },
   { to: '/astrology', label: 'Astrology ✨', icon: '🔮' },
 ];

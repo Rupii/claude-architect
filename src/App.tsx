@@ -5,6 +5,7 @@ import StudyGuide from './components/StudyGuide/StudyGuide';
 import MockTest from './components/MockTest/MockTest';
 import Progress from './components/Progress/Progress';
 import Astrology from './components/Astrology/Astrology';
+import ExamSimulator from './components/ExamSimulator/ExamSimulator';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="test" element={<MockTest />} />
           <Route path="progress" element={<Progress />} />
           <Route path="astrology" element={<Astrology />} />
+          <Route path="exam" element={<ExamSimulator />} />
         </Route>
       </Routes>
     </BrowserRouter>

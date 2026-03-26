@@ -47,6 +47,7 @@ export interface Question {
   domainId: string;
   taskStatementId: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  source?: 'official' | 'community';
 }
 
 export interface Scenario {

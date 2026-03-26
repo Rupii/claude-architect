@@ -137,15 +137,17 @@ function ReviewCard({
   );
 }
 
-// ── Exam Timer ─────────────────────────────────────────────────────────────
+// ── Exam Timer — Pomodoro-style circular ring, fixed top-right ──────────────
+const TIMER_R = 26;
+const TIMER_CIRC = 2 * Math.PI * TIMER_R; // ~163.36
+
 function ExamTimer({ totalSeconds, onExpire }: { totalSeconds: number; onExpire: () => void }) {
   const [remaining, setRemaining] = useState(totalSeconds);
+  const [flash, setFlash] = useState(false);
   const onExpireRef = useRef(onExpire);
   onExpireRef.current = onExpire;
 
-  useEffect(() => {
-    setRemaining(totalSeconds);
-  }, [totalSeconds]);
+  useEffect(() => { setRemaining(totalSeconds); }, [totalSeconds]);
 
   useEffect(() => {
     if (remaining <= 0) { onExpireRef.current(); return; }
@@ -153,19 +155,96 @@ function ExamTimer({ totalSeconds, onExpire }: { totalSeconds: number; onExpire:
     return () => clearInterval(id);
   }, [remaining]);
 
+  // Flash on last minute
+  useEffect(() => {
+    if (remaining === 60) { setFlash(true); setTimeout(() => setFlash(false), 800); }
+  }, [remaining]);
+
+  const progress = remaining / totalSeconds; // 1 → 0
+  const dashOffset = TIMER_CIRC * (1 - progress);
   const mins = Math.floor(remaining / 60);
   const secs = remaining % 60;
-  const urgent = remaining < 300; // < 5 minutes
-  const warning = remaining < 60; // < 1 minute
+  const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+  const ringColor =
+    remaining < 60 ? '#ef4444' :
+    remaining < 300 ? '#f59e0b' :
+    '#3b82f6';
+
+  const label =
+    remaining < 60 ? 'urgent' :
+    remaining < 300 ? 'warning' :
+    'exam';
 
   return (
-    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border font-mono text-sm font-bold transition-colors ${
-      warning ? 'bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 animate-pulse' :
-      urgent ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300' :
-      'bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300'
-    }`}>
-      <span>⏱</span>
-      <span>{String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}</span>
+    <div
+      className="fixed top-[70px] right-4 z-40 select-none"
+      title={`${timeStr} remaining`}
+    >
+      <button
+        className={`relative flex items-center justify-center rounded-full shadow-lg transition-transform duration-150 active:scale-95 focus:outline-none ${
+          flash ? 'animate-ping-once' : ''
+        }`}
+        style={{ width: 64, height: 64 }}
+        onClick={() => {}} // no-op — display only
+        tabIndex={-1}
+      >
+        {/* SVG ring */}
+        <svg
+          width="64"
+          height="64"
+          viewBox="0 0 64 64"
+          className="absolute inset-0"
+          style={{ transform: 'rotate(-90deg)' }}
+        >
+          {/* Track */}
+          <circle
+            cx="32" cy="32" r={TIMER_R}
+            fill="none" strokeWidth="4" stroke="currentColor"
+            className="text-gray-200 dark:text-gray-700"
+          />
+          {/* Progress arc */}
+          <circle
+            cx="32" cy="32" r={TIMER_R}
+            fill="none" strokeWidth="4"
+            stroke={ringColor}
+            strokeDasharray={TIMER_CIRC}
+            strokeDashoffset={dashOffset}
+            strokeLinecap="round"
+            style={{ transition: 'stroke-dashoffset 1s linear, stroke 0.6s ease' }}
+          />
+        </svg>
+
+        {/* Inner disc */}
+        <div
+          className="absolute rounded-full bg-white dark:bg-gray-900 shadow-sm"
+          style={{ inset: 6 }}
+        />
+
+        {/* Running pulse ring when < 5 min */}
+        {remaining < 300 && (
+          <span
+            className="absolute inset-0 rounded-full animate-ping opacity-20"
+            style={{ background: ringColor }}
+          />
+        )}
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center leading-none gap-0.5">
+          <span
+            className="font-mono font-bold text-gray-800 dark:text-gray-100"
+            style={{ fontSize: 11 }}
+          >
+            {timeStr}
+          </span>
+          <span
+            className="font-semibold uppercase tracking-wider"
+            style={{ fontSize: 7, color: ringColor }}
+          >
+            {label}
+          </span>
+        </div>
+      </button>
     </div>
   );
 }
@@ -326,21 +405,21 @@ export default function ExamSimulator() {
 
     return (
       <div className="max-w-2xl mx-auto">
+        {/* Fixed circular timer — top right */}
+        {timerActive && (
+          <ExamTimer
+            totalSeconds={timerSeconds}
+            onExpire={() => { setTimerActive(false); submitExam(); }}
+          />
+        )}
+
         {/* Header */}
         <div className="mb-5">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{testLabel}</span>
-            <div className="flex items-center gap-3 flex-shrink-0 ml-2">
-              {timerActive && (
-                <ExamTimer
-                  totalSeconds={timerSeconds}
-                  onExpire={() => { setTimerActive(false); submitExam(); }}
-                />
-              )}
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {current + 1} / {questions.length}
-              </span>
-            </div>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {current + 1} / {questions.length}
+            </span>
           </div>
           {/* Progress bar — shows answered count, not position */}
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">

@@ -2,16 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────
+   BASE LAYER
+───────────────────────────────────────────── */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar — thin, theme-matched */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(99, 102, 241, 0.35) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.35);
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.6);
   }
 }
 
+/* ─────────────────────────────────────────────
+   KEYFRAMES
+───────────────────────────────────────────── */
+
+/* Existing — improved easing curves */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -22,7 +61,7 @@
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.97);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -31,8 +70,8 @@
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 @keyframes pingOnce {
@@ -41,27 +80,246 @@
   100% { transform: scale(1.6); opacity: 0;   }
 }
 
+/* NEW — sidebar slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* NEW — main content slide in from right */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* NEW — score / badge reveal with spring overshoot */
+@keyframes bounceIn {
+  0%   { opacity: 0; transform: scale(0.6);  }
+  55%  { opacity: 1; transform: scale(1.08); }
+  75%  { transform: scale(0.96); }
+  90%  { transform: scale(1.02); }
+  100% { transform: scale(1);    }
+}
+
+/* NEW — subtle y-axis float for hero elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0);    }
+  50%       { transform: translateY(-7px); }
+}
+
+/* NEW — animated gradient background shift */
+@keyframes gradientShift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+/* NEW — page transition fade + lift */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* NEW — stagger helper pulse (used in stagger utilities) */
+@keyframes staggerFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   UTILITIES LAYER
+───────────────────────────────────────────── */
 @layer utilities {
+
+  /* ── Existing animations — improved ─────── */
+
   .animate-fade-in-up {
-    animation: fadeInUp 0.35s ease-out forwards;
+    animation: fadeInUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
+
   .animate-scale-in {
-    animation: scaleIn 0.2s ease-out forwards;
+    animation: scaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
+
+  .animate-ping-once {
+    animation: pingOnce 0.65s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+  }
+
+  /* ── New animations ──────────────────────── */
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .animate-float {
+    animation: float 3.6s ease-in-out infinite;
+  }
+
+  .animate-gradient {
+    background-size: 300% 300%;
+    animation: gradientShift 6s ease infinite;
+  }
+
+  /* ── Stagger utilities ───────────────────── */
+  /* Apply .stagger-item to each child; set --delay inline or use .stagger-{n} */
+
+  .stagger-item {
+    animation: staggerFadeUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  .stagger-1  { --delay: 60ms;  }
+  .stagger-2  { --delay: 120ms; }
+  .stagger-3  { --delay: 180ms; }
+  .stagger-4  { --delay: 240ms; }
+  .stagger-5  { --delay: 300ms; }
+  .stagger-6  { --delay: 360ms; }
+  .stagger-7  { --delay: 420ms; }
+  .stagger-8  { --delay: 480ms; }
+
+  /* ── Page transition wrapper ─────────────── */
+
+  .page-transition {
+    animation: pageEnter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    will-change: opacity, transform, filter;
+  }
+
+  /* ── Shadow scale helpers ────────────────── */
+
   .card-shadow {
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05), 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.04),
+      0 4px 16px rgba(0, 0, 0, 0.06);
   }
+
   .card-shadow-hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 8px 28px rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 4px 14px rgba(0, 0, 0, 0.10),
+      0 10px 32px rgba(0, 0, 0, 0.08);
   }
+
   .card-shadow-elevated {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.08);
   }
+
+  /* ── Background helpers ──────────────────── */
+
   .bg-grid-subtle {
-    background-image: radial-gradient(circle, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    background-image: radial-gradient(
+      circle,
+      rgba(59, 130, 246, 0.05) 1px,
+      transparent 1px
+    );
     background-size: 24px 24px;
   }
-  .animate-ping-once {
-    animation: pingOnce 0.6s ease-out forwards;
+
+  /* ── Glass morphism utility ──────────────── */
+
+  .glass {
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  /* ── Card hover lift ─────────────────────── */
+
+  .card-hover {
+    transition:
+      transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.22s ease;
+    will-change: transform;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-3px) scale(1.005);
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.10),
+      0 20px 48px rgba(59, 130, 246, 0.08);
+  }
+
+  .card-hover:active {
+    transform: translateY(-1px) scale(1);
+  }
+}
+
+/* ─────────────────────────────────────────────
+   COMPONENTS LAYER
+───────────────────────────────────────────── */
+@layer components {
+
+  /* Primary button — gradient, accessible, springy */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5
+           rounded-xl
+           text-sm font-semibold text-white
+           select-none
+           outline-none
+           focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
+    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+    box-shadow:
+      0 1px 3px rgba(37, 99, 235, 0.3),
+      0 4px 12px rgba(79, 70, 229, 0.25);
+    transition:
+      opacity      0.18s ease,
+      transform    0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow   0.18s ease;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow:
+      0 2px 6px rgba(37, 99, 235, 0.35),
+      0 8px 20px rgba(79, 70, 229, 0.30);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.97);
+    opacity: 1;
+    box-shadow:
+      0 1px 3px rgba(37, 99, 235, 0.3);
   }
 }

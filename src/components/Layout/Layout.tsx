@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import PomodoroTimer from '../PomodoroTimer/PomodoroTimer';
 
 const navItems = [
   { to: '/', label: 'Study Plan', icon: '📅', end: true },
@@ -138,6 +139,8 @@ export default function Layout() {
           <Outlet />
         </main>
       </div>
+
+      <PomodoroTimer />
     </div>
   );
 }

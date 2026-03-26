@@ -11,14 +11,16 @@ const domainColors: Record<string, string> = {
   'domain-5': 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300',
 };
 
-function DayCard({ day, completedTasks, toggleTask }: {
+function DayCard({ day, completedTasks, toggleTask, toggleAll }: {
   day: StudyDay;
   completedTasks: string[];
   toggleTask: (id: string) => void;
+  toggleAll: (ids: string[], check: boolean) => void;
 }) {
   const completed = day.tasks.filter((t) => completedTasks.includes(t.id)).length;
   const pct = Math.round((completed / day.tasks.length) * 100);
   const isComplete = completed === day.tasks.length;
+  const isIndeterminate = completed > 0 && !isComplete;
 
   return (
     <div
@@ -67,6 +69,20 @@ function DayCard({ day, completedTasks, toggleTask }: {
         />
       </div>
 
+      {/* Select all row */}
+      <label className="flex items-center gap-2 mb-3 cursor-pointer group">
+        <input
+          type="checkbox"
+          checked={isComplete}
+          ref={(el) => { if (el) el.indeterminate = isIndeterminate; }}
+          onChange={() => toggleAll(day.tasks.map((t) => t.id), !isComplete)}
+          className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer accent-blue-600"
+        />
+        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200 uppercase tracking-wide">
+          {isComplete ? 'Deselect all' : 'Select all'}
+        </span>
+      </label>
+
       {/* Task list */}
       <ul className="space-y-3">
         {day.tasks.map((task) => {
@@ -106,6 +122,14 @@ function DayCard({ day, completedTasks, toggleTask }: {
 
 export default function StudyPlan() {
   const { progress, toggleTask } = useProgress();
+
+  function toggleAll(ids: string[], check: boolean) {
+    ids.forEach((id) => {
+      const done = progress.completedTasks.includes(id);
+      if (check && !done) toggleTask(id);
+      if (!check && done) toggleTask(id);
+    });
+  }
   const totalTasks = studyPlan.reduce((sum, d) => sum + d.tasks.length, 0);
   const completedTotal = studyPlan
     .flatMap((d) => d.tasks)
@@ -215,6 +239,7 @@ export default function StudyPlan() {
           day={day}
           completedTasks={progress.completedTasks}
           toggleTask={toggleTask}
+          toggleAll={toggleAll}
         />
       ))}
     </div>

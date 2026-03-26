@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { studyPlan } from '../../data/studyPlan';
 import { useProgress } from '../../hooks/useProgress';
 import type { StudyDay } from '../../types';
@@ -111,10 +112,55 @@ export default function StudyPlan() {
     .filter((t) => progress.completedTasks.includes(t.id)).length;
   const overallPct = Math.round((completedTotal / totalTasks) * 100);
 
+  const [name, setName] = useState(() => localStorage.getItem('userName') ?? '');
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(name);
+
+  function saveName() {
+    const trimmed = draft.trim();
+    setName(trimmed);
+    localStorage.setItem('userName', trimmed);
+    setEditing(false);
+  }
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">4-Day Study Plan</h1>
+        {/* Greeting / name */}
+        <div className="flex items-center gap-2 mb-1">
+          {editing ? (
+            <div className="flex items-center gap-2">
+              <input
+                autoFocus
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') saveName(); if (e.key === 'Escape') setEditing(false); }}
+                placeholder="Your name"
+                className="text-2xl font-bold bg-transparent border-b-2 border-blue-500 outline-none text-gray-900 dark:text-white w-48"
+              />
+              <button onClick={saveName} className="text-sm px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save</button>
+              <button onClick={() => setEditing(false)} className="text-sm px-2 py-1 text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 group">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                {name ? `Hey ${name}, here is your 4-Day Study Plan` : '4-Day Study Plan'}
+              </h1>
+              <button
+                onClick={() => { setDraft(name); setEditing(true); }}
+                className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-opacity text-sm"
+                title="Edit name"
+              >
+                ✏️
+              </button>
+            </div>
+          )}
+        </div>
+        {!name && !editing && (
+          <button onClick={() => { setDraft(''); setEditing(true); }} className="text-xs text-blue-500 hover:underline mb-1 block">
+            + Add your name for a personal greeting
+          </button>
+        )}
         <p className="text-gray-500 dark:text-gray-400 mt-1">
           Complete all domains before exam day. {completedTotal}/{totalTasks} tasks done.
         </p>

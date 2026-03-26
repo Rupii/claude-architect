@@ -63,14 +63,17 @@ export default function Layout() {
           </div>
         </div>
 
-        <button
-          onClick={() => setDark(!dark)}
-          className="p-2 rounded-lg text-sm transition-all border border-slate-600/40 hover:border-slate-500/60"
-          style={{ background: 'rgba(255,255,255,0.07)' }}
-          title="Toggle dark mode"
-        >
-          {dark ? '☀️' : '🌙'}
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-slate-400/70 hidden sm:block">© Rupesh M</span>
+          <button
+            onClick={() => setDark(!dark)}
+            className="p-2 rounded-lg text-sm transition-all border border-slate-600/40 hover:border-slate-500/60"
+            style={{ background: 'rgba(255,255,255,0.07)' }}
+            title="Toggle dark mode"
+          >
+            {dark ? '☀️' : '🌙'}
+          </button>
+        </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">

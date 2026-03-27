@@ -1,5 +1,3 @@
-import type { Domain } from '../types';
-
 export interface Highlight {
   id: string;
   domainName: string;

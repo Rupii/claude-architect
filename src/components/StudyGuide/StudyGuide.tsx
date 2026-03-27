@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { domains } from '../../data/domains';
 import { useProgress } from '../../hooks/useProgress';
 import type { TaskStatement } from '../../types';
@@ -50,19 +51,19 @@ function TaskStatementCard({ ts, color }: { ts: TaskStatement; color: string }) 
   return (
     <div className={`border rounded-xl overflow-hidden transition-shadow duration-200 hover:shadow-md ${domainBorderColors[color]}`} style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
       <button
-        className="w-full flex items-center justify-between px-4 py-3.5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        className="w-full flex items-start justify-between px-4 py-3.5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors gap-2"
         onClick={() => setOpen(!open)}
       >
-        <div className="flex items-center gap-2">
-          <span className={`font-mono text-xs font-bold ${domainTextColors[color]}`}>{ts.id}</span>
+        <div className="flex items-center gap-2 flex-wrap flex-1 min-w-0">
+          <span className={`font-mono text-xs font-bold flex-shrink-0 ${domainTextColors[color]}`}>{ts.id}</span>
           <span className="font-medium text-gray-900 dark:text-white text-sm">{ts.title}</span>
           {ts.keyConcepts && ts.keyConcepts.length > 0 && (
-            <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 ml-1">
+            <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 flex-shrink-0">
               {ts.keyConcepts.length} concepts
             </span>
           )}
         </div>
-        <span className="text-gray-400 dark:text-gray-500 ml-2">{open ? '▲' : '▼'}</span>
+        <span className="text-gray-400 dark:text-gray-500 flex-shrink-0 mt-0.5">{open ? '▲' : '▼'}</span>
       </button>
 
       {open && (
@@ -151,6 +152,7 @@ export default function StudyGuide() {
   const [search, setSearch] = useState('');
   const { progress, updateNote } = useProgress();
 
+  const navigate = useNavigate();
   const selectedDomain = domains.find((d) => d.id === selectedDomainId) ?? domains[0];
   const note = progress.notes[selectedDomainId] ?? '';
 
@@ -173,10 +175,35 @@ export default function StudyGuide() {
         </p>
       </div>
 
-      <div className="flex gap-6">
-        {/* Domain list */}
-        <div className="w-48 flex-shrink-0">
-          <div className="space-y-1 sticky top-16 max-h-[calc(100vh-120px)] overflow-y-auto">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+        {/* Domain selector */}
+        <div className="md:w-48 md:flex-shrink-0">
+          {/* Mobile: horizontal scrollable tabs */}
+          <div
+            className="flex md:hidden overflow-x-auto gap-2 pb-2"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {domains.map((domain) => (
+              <button
+                key={domain.id}
+                onClick={() => { setSelectedDomainId(domain.id); setSearch(''); }}
+                aria-label={`Select domain: ${domain.name}`}
+                style={selectedDomainId === domain.id ? { background: 'linear-gradient(135deg, #1e3a5f, #3b82f6)' } : undefined}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                  selectedDomainId === domain.id
+                    ? 'text-white shadow-md'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                }`}
+              >
+                <span className={`w-2 h-2 rounded-full flex-shrink-0 ${domainBgColors[domain.color]}`} />
+                {domain.name.split(' ')[0]}
+                <span className="opacity-60">{domain.weight}%</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Desktop: vertical sticky list */}
+          <div className="hidden md:block space-y-1 sticky top-16 max-h-[calc(100vh-120px)] overflow-y-auto">
             {domains.map((domain) => (
               <button
                 key={domain.id}
@@ -190,9 +217,7 @@ export default function StudyGuide() {
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`w-2 h-2 rounded-full flex-shrink-0 ${domainBgColors[domain.color]}`}
-                  />
+                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${domainBgColors[domain.color]}`} />
                   <span className="truncate">{domain.name.split(' ')[0]}</span>
                 </div>
                 <div className="text-xs opacity-60 mt-0.5 pl-4">{domain.weight}%</div>
@@ -235,6 +260,12 @@ export default function StudyGuide() {
                 <span className="text-xs px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-950/30 text-purple-700 dark:text-purple-400 font-medium border border-purple-100 dark:border-purple-900/40">
                   ⚡ {selectedDomain.taskStatements.reduce((sum, ts) => sum + ts.skills.length, 0)} skills
                 </span>
+                <button
+                  onClick={() => navigate('/highlights')}
+                  className="ml-auto text-xs px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 font-medium border border-amber-200 dark:border-amber-900/40 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
+                >
+                  ⭐ Key Concepts
+                </button>
               </div>
 
               <input

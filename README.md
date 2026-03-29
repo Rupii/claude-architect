@@ -2,6 +2,8 @@
 
 A fully offline, interactive study app for the **Claude Certified Architect – Foundations** certification exam.
 
+**Live app:** https://claude-exam-prep-jet.vercel.app
+
 ![React](https://img.shields.io/badge/React-18-61dafb?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript) ![Vite](https://img.shields.io/badge/Vite-6-646cff?logo=vite) ![Tailwind](https://img.shields.io/badge/Tailwind-3-06b6d4?logo=tailwindcss)
 
 ## Features
